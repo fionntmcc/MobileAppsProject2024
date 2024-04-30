@@ -1,21 +1,27 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Details</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button text="Back"></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   @if (movie(); as movie) {
     <ion-card>
+      
+      <!-- img tag does not provide good image resulution -->
+      <!--
+        <ion-avatar class="movie-poster">
+        <img [src]="imageBaseUrl + '/w92' + movie.poster_path"    alt="poster">
+        </ion-avatar>
+      -->
       <div class="movie-poster" style="margin: auto;"
         [style.height.px]="400"
         [style.width.px]="400"
         
         [style.background-image]="'url(' + imageBaseUrl + '/w400' + movie?.poster_path + ')'"> 
       </div>
-      <!--<ion-avatar class="movie-poster">
-        <img [src]="imageBaseUrl + '/w92' + movie.poster_path" alt="poster">
-      </ion-avatar>-->
 
       <ion-card-header>
         <ion-card-title> {{ movie?.title }}</ion-card-title>
@@ -39,6 +45,12 @@
             <ion-label>Budget: {{movie.budget | currency: 'USD' }}</ion-label>
           }
         </ion-item>
+        <ion-buttons>
+          <ion-button (click)="openMovieWebsite()">Official Website</ion-button>
+          <!--
+          <ion-button>Watch Trailer</ion-button>
+          -->
+        </ion-buttons>
       </ion-card-content>
     </ion-card>
   }
