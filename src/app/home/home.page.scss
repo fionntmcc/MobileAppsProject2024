@@ -25,3 +25,11 @@
 #container a {
   text-decoration: none;
 }
+
+.movie-list-item {
+  min-height: 80px;
+}
+
+.movie-poster {
+  --border-radius: 8px;
+}
