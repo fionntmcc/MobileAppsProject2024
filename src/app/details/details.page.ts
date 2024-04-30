@@ -1,6 +1,23 @@
 import { Component, Input, OnInit, WritableSignal, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkWithHref } from '@angular/router';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonText, IonLabel, IonButtons, IonButton, IonBackButton, IonItem, IonNav, IonAvatar, } from '@ionic/angular/standalone';
+import { RouterLinkWithHref } from '@angular/router';
+import { IonContent,
+   IonHeader, 
+   IonTitle, 
+   IonToolbar, 
+   IonIcon, 
+   IonCard, 
+   IonCardHeader, 
+   IonCardTitle, 
+   IonCardSubtitle, 
+   IonCardContent, 
+   IonText, 
+   IonLabel, 
+   IonButtons, 
+   IonButton, 
+   IonBackButton, 
+   IonItem, 
+   IonNav, 
+   IonAvatar, } from '@ionic/angular/standalone';
 import { MovieService } from 'src/services/movie.service';
 import { MovieResult } from 'src/services/interfaces';
 import { CurrencyPipe, DatePipe} from '@angular/common';
@@ -11,7 +28,27 @@ import { Browser } from '@capacitor/browser';
   templateUrl: './details.page.html',
   styleUrls: ['./details.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonText, IonLabel, IonButtons, IonButton, IonBackButton, IonItem, DatePipe, CurrencyPipe, IonNav, IonAvatar, RouterLinkWithHref, ]
+  imports: [IonContent, 
+    IonHeader, 
+    IonTitle, 
+    IonToolbar, 
+    IonIcon, 
+    IonCard, 
+    IonCardHeader, 
+    IonCardTitle, 
+    IonCardSubtitle, 
+    IonCardContent, 
+    IonText, 
+    IonLabel, 
+    IonButtons, 
+    IonButton,
+    IonBackButton, 
+    IonItem, 
+    DatePipe, 
+    CurrencyPipe, 
+    IonNav, 
+    IonAvatar, 
+    RouterLinkWithHref, ]
 })
 export class DetailsPage implements OnInit {
   private movieService = inject(MovieService);

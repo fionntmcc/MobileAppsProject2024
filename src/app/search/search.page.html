@@ -1,13 +1,62 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>search</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button text="Back"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Top Movies
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">search</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-searchbar type="text" placeholder="Search movies" [debounce]="1000" (ionInput)="getSearchbarValue($event)"></ion-searchbar>
+  @if (isLoading) {
+    <ion-list>
+      @for (i of dummyArray; track i) {
+        <ion-item lines="none" class="ion-padding-bottom">
+          <ion-avatar slot="start">
+            <ion-skeleton-text></ion-skeleton-text>
+          </ion-avatar>
+          <ion-skeleton-text animated style="height: 40px"/>
+        </ion-item>
+      }
+    </ion-list>
+  } @else if (error) {
+    <ion-alert header="Error" [message]="error" isOpen="true" [buttons]="['Ok']" />
+  }
+
+  <ion-list>
+    @for (item of movies; track item.id) {
+      <ion-item class="movie-list-item" button [routerLink]="['/details', item.id]">
+        <ion-avatar slot="start" class="movie-poster">
+          <img [src]="imageBaseUrl + '/w92' + item.poster_path" alt="poster">
+        </ion-avatar>
+        
+        <ion-label class="ion-text-wrap">
+          <h3> {{ item.title }} </h3>
+          <p>Release Date: {{ item.release_date | date:'d/M/y' }}</p>
+        </ion-label>
+
+        <ion-badge slot="end"> {{ item.vote_average }}</ion-badge>
+      </ion-item>
+
+    } @empty {
+      @if (!isLoading) {
+        <ion-item lines="none">
+          @if (!isEmpty) {
+            <ion-label class="ion-test-center">No movies found</ion-label>
+          } @else {
+            <ion-label class="ion-test-center">Enter movie name</ion-label>
+          }
+        </ion-item>
+      
+      }
+    }
+  </ion-list>
+
+  <ion-infinite-scroll (ionInfinite)="loadMoreMovies($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data"></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  
 </ion-content>
