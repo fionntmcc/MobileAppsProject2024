@@ -1,0 +1,7 @@
+{
+  "name": "music-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
