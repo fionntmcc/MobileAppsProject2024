@@ -13,6 +13,13 @@
         <ion-avatar class="movie-poster" slot="start">
           <img [src]="imageBaseUrl + '/w92' + item.poster_path" alt="poster">
         </ion-avatar>
+
+        <ion-label class="ion-text-wrap">
+          <h3> {{ item.title }} </h3>
+          <p>Release Date: {{ item.release_date | date:'d/M/y' }}</p>
+        </ion-label>
+
+        <ion-badge slot="end"> {{ item.vote_average }}</ion-badge>
       </ion-item>
     }
   </ion-list>

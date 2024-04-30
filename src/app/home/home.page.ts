@@ -1,15 +1,17 @@
 import { Component, inject, } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonList, IonAvatar, } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonList, IonAvatar, IonLabel, IonBadge, } from '@ionic/angular/standalone';
 import { MovieService } from 'src/services/movie.service';
 import { finalize, catchError} from 'rxjs';
 import { MovieResult } from 'src/services/interfaces';
+import { DatePipe } from '@angular/common';
+
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonList, IonAvatar, ],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonList, IonAvatar, IonLabel, IonBadge, DatePipe, ],
 })
 export class HomePage {
 
