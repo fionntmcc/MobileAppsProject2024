@@ -6,7 +6,27 @@
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content [fullscreen]="true">
+  <!--Code block displays fake skeleton list if the 
+    httpclient is getting initial movie list -->
+  @if (isLoading) {
+    <ion-list>
+      @for (i of fakeArray; track i) {
+        <ion-item lines="none" class="ion-padding-bottom">
+          <ion-avatar slot="start">
+            <ion-skeleton-text></ion-skeleton-text>
+          </ion-avatar>
+          <ion-skeleton-text animated style="height: 40px"/>
+        </ion-item>
+      }
+    </ion-list>
+    <!-- Display error message if movies cannot be retrieved -->
+  } @else if (error) {
+    <ion-alert header="Error" [message]="error" isOpen="true" [buttons]="['Ok']" />
+  }
+
+  <!-- Display all movie items to screen in list -->
   <ion-list>
     @for (item of movies; track item.id) {
       <ion-item class="movie-list-item">
@@ -21,8 +41,21 @@
 
         <ion-badge slot="end"> {{ item.vote_average }}</ion-badge>
       </ion-item>
+    } @empty {
+      <!-- If list is empty and not loading, no movies found -->
+      @if (!isLoading) {
+        <ion-item lines="none">
+          <ion-label class="ion-test-center">No movies found</ion-label>
+        </ion-item>
+      
+      }
     }
   </ion-list>
+ <!-- If reaching end of page, genereate more 
+  movies and display loading symbol -->
+  <ion-infinite-scroll (ionInfinite)="loadMoreMovies($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data"></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
 
 

@@ -33,7 +33,11 @@
         <ion-label color="medium">{{ movie.overview }}</ion-label>
 
         <ion-item lines="none">
-          <ion-label>Budget: {{ movie.budget | currency: 'USD' }}</ion-label>
+          @if (movie.budget == 0) {
+            <ion-label>Movie budget is unavaible</ion-label>
+          } @else {
+            <ion-label>Budget: {{movie.budget | currency: 'USD' }}</ion-label>
+          }
         </ion-item>
       </ion-card-content>
     </ion-card>
