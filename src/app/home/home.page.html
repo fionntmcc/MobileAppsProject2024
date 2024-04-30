@@ -15,7 +15,7 @@
         </ion-avatar>
 
         <ion-label class="ion-text-wrap">
-          <h3> {{ item.title }} </h3>
+          <h3 [routerLink]="['/details', item.id]"> {{ item.title }} </h3>
           <p>Release Date: {{ item.release_date | date:'d/M/y' }}</p>
         </ion-label>
 

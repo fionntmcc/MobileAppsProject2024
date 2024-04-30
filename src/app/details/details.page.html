@@ -1,0 +1,41 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (movie(); as movie) {
+    <ion-card>
+      <div class="movie-poster" style="margin: auto;"
+        [style.height.px]="400"
+        [style.width.px]="400"
+        
+        [style.background-image]="'url(' + imageBaseUrl + '/w400' + movie?.poster_path + ')'"> 
+      </div>
+      <!--<ion-avatar class="movie-poster">
+        <img [src]="imageBaseUrl + '/w92' + movie.poster_path" alt="poster">
+      </ion-avatar>-->
+
+      <ion-card-header>
+        <ion-card-title> {{ movie?.title }}</ion-card-title>
+        <ion-card-subtitle> {{ movie.tagline }}</ion-card-subtitle>
+        <ion-text color="tertiary">
+          @for (genre of movie.genres; track genre.id; let isLast = $last;) {
+            <span> {{ genre.name }} {{ !isLast ? ',' : '' }} </span>
+          }
+          <div>Country: {{movie.origin_country}}</div>
+          <div>Release Date: {{movie.release_date | date:'d/M/y' }}</div>
+          <div>Rating: {{movie.vote_average}}/10</div>
+        </ion-text>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-label color="medium">{{ movie.overview }}</ion-label>
+
+        <ion-item lines="none">
+          <ion-label>Budget: {{ movie.budget | currency: 'USD' }}</ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  }
+</ion-content>

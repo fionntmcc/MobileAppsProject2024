@@ -23,4 +23,8 @@ export class MovieService {
     return this.httpClient.get<ApiResult>(BASE_URL + "/movie/popular?page=" + page + "&api_key=" + API_KEY);
   }
 
+  getMovieDetails(id:string): Observable<MovieResult> {
+    return this.httpClient.get<MovieResult>(BASE_URL + "/movie/" + id + "?api_key=" + API_KEY);
+  }
+
 }

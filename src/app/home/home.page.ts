@@ -2,6 +2,7 @@ import { Component, inject, } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonList, IonAvatar, IonLabel, IonBadge, } from '@ionic/angular/standalone';
 import { MovieService } from 'src/services/movie.service';
 import { finalize, catchError} from 'rxjs';
+import { RouterLinkWithHref } from '@angular/router';
 import { MovieResult } from 'src/services/interfaces';
 import { DatePipe } from '@angular/common';
 
@@ -11,7 +12,7 @@ import { DatePipe } from '@angular/common';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonList, IonAvatar, IonLabel, IonBadge, DatePipe, ],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonList, IonAvatar, IonLabel, IonBadge, DatePipe, RouterLinkWithHref, ],
 })
 export class HomePage {
 
