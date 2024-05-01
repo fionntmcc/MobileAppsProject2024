@@ -25,6 +25,7 @@ import { finalize, catchError} from 'rxjs';
 import { MovieResult } from 'src/services/interfaces';
 import { RouterLinkWithHref } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { Storage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-home',
@@ -134,6 +135,4 @@ export class SearchPage {
       console.log(movie);
     });
   }
-
-  
 }

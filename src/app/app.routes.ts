@@ -22,4 +22,8 @@ export const routes: Routes = [
     path: 'search',
     loadComponent: () => import('./search/search.page').then( m => m.SearchPage)
   },
+  {
+    path: 'library',
+    loadComponent: () => import('./library/library.page').then( m => m.LibraryPage)
+  },
 ];
