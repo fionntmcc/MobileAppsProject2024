@@ -1,5 +1,4 @@
 import { Component, inject, } from '@angular/core';
-import { Storage } from '@ionic/storage-angular';
 import { IonHeader,
   IonToolbar,
   IonTitle,
@@ -19,9 +18,10 @@ import { IonHeader,
   IonButtons,
  } from '@ionic/angular/standalone';
 import { MovieService } from 'src/services/movie.service';
+import { StorageService } from 'src/services/storage.service';
 import { finalize, catchError} from 'rxjs';
 import { RouterLinkWithHref } from '@angular/router';
-import { MovieResult } from 'src/services/interfaces';
+import { MovieResult, WatchedMovie } from 'src/services/interfaces';
 import { DatePipe } from '@angular/common';
 
 
@@ -35,6 +35,7 @@ import { DatePipe } from '@angular/common';
 export class HomePage {
 
   private movieService = inject(MovieService);
+  private storageService = inject(StorageService);
   private currentPage:number = 1;
   public movies:MovieResult[] = [];
   public imageBaseUrl = "https://image.tmdb.org/t/p";
@@ -42,6 +43,9 @@ export class HomePage {
   public isLoading:boolean = false;
   public index = 1;
   public fakeArray = new Array(5);
+
+  public id:string = "";
+  public value:string = "";
 
 
   constructor() {
@@ -93,5 +97,18 @@ export class HomePage {
   loadMoreMovies(event?: InfiniteScrollCustomEvent) {
     this.currentPage++;
     this.loadMovies(event);
+  }
+
+  // Methods to retrieve from DB
+  async set(id:string, value:any) {
+    return await this.storageService.set(id , value);
+  }
+
+  async get(id:string) {
+    return await this.storageService.get(id);
+  }
+
+  async remove(id:string) {
+    return await this.storageService.remove(id);
   }
 }

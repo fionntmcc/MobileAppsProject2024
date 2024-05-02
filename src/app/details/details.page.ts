@@ -20,13 +20,17 @@ import { IonContent,
    IonAvatar,
    IonToggle,
    IonPopover,
+   IonInput,
    IonRadio, } from '@ionic/angular/standalone';
 import { MovieService } from 'src/services/movie.service';
-import { MovieResult } from 'src/services/interfaces';
+import { StorageService } from 'src/services/storage.service';
+import { MovieResult, WatchedMovie } from 'src/services/interfaces';
 import { CurrencyPipe, DatePipe} from '@angular/common';
 import { Browser } from '@capacitor/browser';
-import { IonicStorageModule } from '@ionic/storage-angular';
 import { Storage } from '@ionic/storage-angular';
+import { NgModule } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { FormsModule, NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-details',
@@ -56,7 +60,9 @@ import { Storage } from '@ionic/storage-angular';
     RouterLinkWithHref,
     IonToggle,
     IonPopover,
+    IonInput,
     IonRadio, 
+    FormsModule,
   ]
 })
 
@@ -64,19 +70,23 @@ import { Storage } from '@ionic/storage-angular';
 
 export class DetailsPage implements OnInit {
   private movieService = inject(MovieService);
+  private storageService = inject(StorageService);
   public imageBaseUrl = "https://image.tmdb.org/t/p";
   public movie:WritableSignal<MovieResult | null> = signal(null);
   public homepage:string = "";
   public startingState:boolean = true;
   public isChecked:boolean = this.startingState;
   public status:string = "";
+  public rating:number = 0;
+  private movieId:string = "";
 
   @Input()
   set id(movieId:string) {
     this.movieService.getMovieDetails(movieId).subscribe((movie) => {
       console.log(movie);
-      this.movie.set(movie);
+      this.movie.set(movie); 
       this.homepage = movie.homepage;
+      this.movieId = movieId;
     });
 
   }
@@ -85,34 +95,58 @@ export class DetailsPage implements OnInit {
     await Browser.open({ url: this.homepage});
   }
 
-  toggleClicked(): void {
+  async toggleClicked() {
     this.isChecked = !this.isChecked;
     
-    if (this.isChecked) {
-      // !!!!! ACTIVATE POPUP !!!!!
+    if (!this.isChecked) {
+      await this.removeWatchedMovie();
     }
   }
 
-  async ionViewWillEnter() {
-    await this.storage.create();
-    this.status = await this.storage.get('status');
-    //await console.log("hi" + this.storage.get('state'));
+  // Methods to interact with DB
+  async set(key:string, value:number) {
+    return await this.storageService.set(key, value);
   }
 
-  async saveStatus() {
-    await this.storage.set('status', "val")
-    .catch(error=>{
-      alert(error);
-      }
-    );
-    console.log("saveStatus() Running");
-    console.log("Value" + this.storage.get('status'));
+  async get(key:string) {
+    return await this.storageService.get(key);
+  }
+
+  async removeWatchedMovie() {
+    await this.storageService.remove(this.movieId);
+  }
+
+  async getWatchedMovies() {
+    const keys = await this.storageService.keySet();
+    console.log("All keys: " + keys);
+    for (let i = 0; i < keys.length; i++) {
+      const rating = await this.storageService.get(keys[i]);
+      console.log("Key: " + keys[i] + "  -  Value: " + rating);
+    }
+  }
+
+  // Retrieves list of watchedMovies from database,
+  // adds current movie to list,
+  // and uploads new list to database
+  async addWatchedMovie() {
+    await this.storageService.set(this.movieId, this.rating);
+  }
+
+  saveRating() {
+    console.log(this.rating);
+    if (this.rating >= 0 && this.rating <= 10) {
+      // save rating
+      this.addWatchedMovie();
+    } else {
+      alert("Please enter a rating between 0 and 10.");
+    }
+    
   }
 
   constructor(private storage: Storage) { 
-    this.ionViewWillEnter();
-    this.saveStatus();
-
+    // Get list of watched movies
+    this.getWatchedMovies();
+    //this.storage.clear();
   }
 
   ngOnInit() {

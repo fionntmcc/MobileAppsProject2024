@@ -83,6 +83,11 @@ export interface TrailerResult {
   videos: Videos;
 }
 
+export interface WatchedMovie {
+  id: number;
+  rating: number;
+}
+
 interface Spokenlanguage {
   english_name: string;
   iso_639_1: string;

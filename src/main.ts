@@ -7,6 +7,8 @@ import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
 import { provideHttpClient } from '@angular/common/http';
+import { Drivers } from '@ionic/storage';
+import { FormsModule } from '@angular/forms';
 
 if (environment.production) {
   enableProdMode();
@@ -18,6 +20,9 @@ bootstrapApplication(AppComponent, {
     provideIonicAngular(),
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(),
-    importProvidersFrom(IonicStorageModule.forRoot()),
+    importProvidersFrom(IonicStorageModule.forRoot( {
+      name: 'database',
+      driverOrder: [Drivers.IndexedDB],
+    })),
   ],
 });

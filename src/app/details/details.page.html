@@ -3,8 +3,14 @@
     <ion-buttons slot="start">
       <ion-back-button text="Back"></ion-back-button>
     </ion-buttons>
-    <ion-toggle [enableOnOffLabels]="true" [checked]="startingState" (click)="toggleClicked()" slot="end" style="padding-right: 5%;">Watched</ion-toggle>
+    <ion-toggle [enableOnOffLabels]="true" id="clickToggle" [checked]="startingState" (click)="toggleClicked()" slot="end" style="padding-right: 5%;">Watched</ion-toggle>
     <ion-popover [isOpen]="isChecked">
+      <ng-template>
+          <ion-item>
+            <ion-input id="ratingInput" type="number" [(ngModel)]="rating" label="Enter Rating: (0-10)" placeholder="Rating"></ion-input>
+          </ion-item>
+          <ion-button (click)="saveRating()">Save Rating</ion-button>
+      </ng-template>
     </ion-popover>
   </ion-toolbar>
 </ion-header>
@@ -52,7 +58,7 @@
           @if (homepage === "") {
             <ion-button>Website Unavaible</ion-button>
           } @else {
-            <ion-button (click)="openMovieWebsite()">Official Website</ion-button>
+            <ion-button color="tertiary" (click)="openMovieWebsite()">Official Website</ion-button>
           }
           
           <!--

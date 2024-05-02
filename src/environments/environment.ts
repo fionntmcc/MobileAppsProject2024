@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   apiKey: '02a81f76dedb774ea32132d927cdef8c',
+  watchedMoviesKey: 'watchedMovies',
 };
 
 /*
