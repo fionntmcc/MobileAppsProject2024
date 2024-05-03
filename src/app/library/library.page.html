@@ -10,9 +10,59 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">library</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <!-- Button linking to search page -->
+  <ion-buttons>
+    <ion-button [routerLink]="['/search']">Search Movies</ion-button>
+    <ion-button [routerLink]="['/library']">Library</ion-button>
+  </ion-buttons>
+  <!-- Code block displays fake skeleton list if the 
+    httpclient is getting initial movie list -->
+  @if (isLoading) {
+    <!--
+      <ion-list>
+      @for (i of fakeArray; track i) {
+        <ion-item lines="none" class="ion-padding-bottom">
+          <ion-avatar slot="start">
+            <ion-skeleton-text></ion-skeleton-text>
+          </ion-avatar>
+          <ion-skeleton-text animated style="height: 40px"/>
+        </ion-item>
+      }
+    </ion-list>
+      -->
+    <!-- Display error message if movies cannot be retrieved -->
+  } @else if (error) {
+    <ion-alert header="Error" [message]="error" isOpen="true" [buttons]="['Ok']" />
+  }
+
+  <!-- Display all movie items to screen in list -->
+  <ion-list>
+    @for (item of movies; track item.id) {
+      <ion-item class="movie-list-item" [routerLink]="['/details', item.id]">
+        <ion-avatar class="movie-poster" slot="start">
+          <img [src]="imageBaseUrl + '/w92' + item.poster_path" alt="poster">
+        </ion-avatar>
+
+        <ion-label class="ion-text-wrap">
+          <h3> {{ item.title }} </h3>
+          <p>Release Date: {{ item.release_date | date:'d/M/y' }}</p>
+        </ion-label>
+
+        <ion-badge slot="end"> {{ item.vote_average }}</ion-badge>
+      </ion-item>
+    } @empty {
+      <!-- If list is empty and not loading, no movies found -->
+      @if (!isLoading) {
+        <ion-item lines="none">
+          <ion-label class="ion-test-center">No movies found</ion-label>
+        </ion-item>
+      
+      }
+    }
+  </ion-list>
+ <!-- If reaching end of page, genereate more 
+  movies and display loading symbol -->
+  <ion-infinite-scroll (ionInfinite)="loadMoreMovies($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data"></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

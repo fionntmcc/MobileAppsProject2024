@@ -47,15 +47,15 @@ export class LibraryPage {
   public dummyArray = new Array(5);
   public index = 1;
   public searchTerm:any = "";
-  private movieIds:string = "";
 
   constructor() {
     this.loadMovies();
+    console.log(this.movies);
   }
 
   loadMoreMovies(event: InfiniteScrollCustomEvent) {
     this.currentPage++;
-    this.getMovieSearch();
+    //this.getMovieSearch();
   }
 
   loadMovies(event?: InfiniteScrollCustomEvent) {
@@ -66,13 +66,34 @@ export class LibraryPage {
     }
 
     this.storageService.keySet()
-    .then(response => {
-      console.log("Keyset:" + response);
+    .then(responseKeys => {
+      console.log("Keyset:" + responseKeys);
+
+      // Below is my failed attempt to sort the movies by ratings, however it will be 
+      // easier to sort the returned array of movies than database entries
+      // responseKeys.sort((a, b) => (await this.storageService.get(a) - await this.storageService.get(b)));
+      
+      for (let i = 0; i < responseKeys.length; i++) {
+        this.movieService.getMovieDetails(responseKeys[i]).pipe(
+          catchError((e) => {
+            console.log(e);
+            this.error = e.error.status_message;
+            return [];
+          })
+        )
+        .subscribe({
+          next: (res) => {
+            console.log(res);
+            this.movies.push(res);
+          }
+        })
+
+      }
     })
     .catch(e => {
       console.log("Error: " + e);
     });
-
+    /*
     this.movieService.getTopCharts(this.currentPage).pipe(
       finalize(() => {
         this.isLoading = false;
@@ -99,6 +120,7 @@ export class LibraryPage {
     this.movieService.getTopCharts().subscribe((movies) => {
       console.log(movies);
     });
+    */
   }
 
   getSearchbarValue(event:SearchbarCustomEvent) {
