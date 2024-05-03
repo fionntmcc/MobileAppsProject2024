@@ -39,4 +39,5 @@ export class StorageService {
   public async clearDB() {
     return await this.storage.clear();
   }
+
 }

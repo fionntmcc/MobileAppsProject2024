@@ -3,8 +3,12 @@
     <ion-buttons slot="start">
       <ion-back-button text="Back"></ion-back-button>
     </ion-buttons>
-    <ion-toggle [enableOnOffLabels]="true" id="clickToggle" [checked]="startingState" (click)="toggleClicked()" slot="end" style="padding-right: 5%;">Watched</ion-toggle>
-    <ion-popover [isOpen]="isChecked">
+    <!-- 
+      There is a known bug with the IonToggle, where if the toggle startingState = true,
+      then the intial click does not visually change the button's state
+    -->
+    <ion-toggle [enableOnOffLabels]="true" name="toggle" [checked]="isChecked" (click)="toggleClicked()" slot="end" style="padding-right: 5%;">Watched</ion-toggle>
+    <ion-popover [isOpen]="isPopupActive">
       <ng-template>
           <ion-item>
             <ion-input id="ratingInput" type="number" [(ngModel)]="rating" label="Enter Rating: (0-10)" placeholder="Rating"></ion-input>

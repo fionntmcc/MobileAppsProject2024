@@ -31,6 +31,7 @@ import { Storage } from '@ionic/storage-angular';
 import { NgModule } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { FormsModule, NgModel } from '@angular/forms';
+import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-details',
@@ -73,9 +74,9 @@ export class DetailsPage implements OnInit {
   private storageService = inject(StorageService);
   public imageBaseUrl = "https://image.tmdb.org/t/p";
   public movie:WritableSignal<MovieResult | null> = signal(null);
+  public isChecked:boolean = false;
+  public isPopupActive:boolean = false;
   public homepage:string = "";
-  public startingState:boolean = true;
-  public isChecked:boolean = this.startingState;
   public status:string = "";
   public rating:number = 0;
   private movieId:string = "";
@@ -100,7 +101,11 @@ export class DetailsPage implements OnInit {
     
     if (!this.isChecked) {
       await this.removeWatchedMovie();
+      this.isPopupActive = false;
+    } else { 
+      this.isPopupActive = true;
     }
+    console.log(this.isChecked);
   }
 
   // Methods to interact with DB
@@ -122,6 +127,7 @@ export class DetailsPage implements OnInit {
     for (let i = 0; i < keys.length; i++) {
       const rating = await this.storageService.get(keys[i]);
       console.log("Key: " + keys[i] + "  -  Value: " + rating);
+      
     }
   }
 
@@ -132,11 +138,24 @@ export class DetailsPage implements OnInit {
     await this.storageService.set(this.movieId, this.rating);
   }
 
+  getToggleStartingValue():boolean {
+    this.storageService.get(this.movieId)
+    .then(response => {
+      if (response === undefined) { return false; }
+      return true;
+    })
+    .catch(e => {
+      console.log("Error getting this movie's rating: " + e)
+    })
+    return false;
+  }
+
   saveRating() {
     console.log(this.rating);
     if (this.rating >= 0 && this.rating <= 10) {
       // save rating
       this.addWatchedMovie();
+      this.isPopupActive = false;
     } else {
       alert("Please enter a rating between 0 and 10.");
     }
@@ -145,6 +164,7 @@ export class DetailsPage implements OnInit {
 
   constructor(private storage: Storage) { 
     // Get list of watched movies
+    this.isChecked = this.getToggleStartingValue();
     this.getWatchedMovies();
     //this.storage.clear();
   }

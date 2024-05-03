@@ -1,20 +1,164 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { Component, inject } from '@angular/core';
+import { IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    InfiniteScrollCustomEvent,
+    SearchbarCustomEvent,
+    IonList, 
+    IonItem,
+    IonLabel,
+    IonAvatar,
+    IonSkeletonText, 
+    IonAlert,
+    IonBadge,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
+    IonSearchbar,
+    IonButton,
+    IonButtons,
+    IonBackButton,
+   } from '@ionic/angular/standalone';
+//import { DatePipe } from '@angular/common';
+import { MovieService } from 'src/services/movie.service';
+import { finalize, catchError} from 'rxjs';
+import { MovieResult, WatchedMovie } from 'src/services/interfaces';
+import { RouterLinkWithHref } from '@angular/router';
+import { DatePipe } from '@angular/common';
+import { Storage } from '@ionic/storage-angular';
+import { StorageService } from 'src/services/storage.service';
 
 @Component({
-  selector: 'app-library',
-  templateUrl: './library.page.html',
-  styleUrls: ['./library.page.scss'],
+  selector: 'app-home',
+  templateUrl: 'library.page.html',
+  styleUrls: ['library.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonAvatar, IonSkeletonText, IonAlert, IonBadge, RouterLinkWithHref, DatePipe, IonInfiniteScroll, IonInfiniteScrollContent, IonSearchbar, IonButton, IonButtons, IonBackButton, ],
 })
-export class LibraryPage implements OnInit {
+export class LibraryPage {
+  private movieService = inject(MovieService);
+  private storageService = inject(StorageService);
+  private currentPage:number = 1;
+  public error = null;
+  public isLoading:boolean = false;
+  public isEmpty:boolean = true;
+  public movies:MovieResult[] = [];
+  public imageBaseUrl = "https://image.tmdb.org/t/p";
+  public dummyArray = new Array(5);
+  public index = 1;
+  public searchTerm:any = "";
+  private movieIds:string = "";
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
+    this.loadMovies();
   }
 
+  loadMoreMovies(event: InfiniteScrollCustomEvent) {
+    this.currentPage++;
+    this.getMovieSearch();
+  }
+
+  loadMovies(event?: InfiniteScrollCustomEvent) {
+    this.error = null;
+
+    if (!event) {
+      this.isLoading = true;
+    }
+
+    this.storageService.keySet()
+    .then(response => {
+      console.log("Keyset:" + response);
+    })
+    .catch(e => {
+      console.log("Error: " + e);
+    });
+
+    this.movieService.getTopCharts(this.currentPage).pipe(
+      finalize(() => {
+        this.isLoading = false;
+        if (event) {
+          event.target.complete();
+        }
+      }),
+      catchError((e) => {
+        console.log(e);
+        this.error = e.error.status_message;
+        return [];
+      })  
+    )
+    .subscribe({
+      next: (res) => {
+        console.log(res);
+        this.movies.push(...res.results);
+        if (event) {
+          event.target.disabled = res.total_pages === this.currentPage;
+        }
+      },
+    });
+
+    this.movieService.getTopCharts().subscribe((movies) => {
+      console.log(movies);
+    });
+  }
+
+  getSearchbarValue(event:SearchbarCustomEvent) {
+    this.movies = [];
+    this.searchTerm = event.detail.value?.trim();
+    console.log(this.searchTerm);
+    if (this.searchTerm === "") {
+      this.isEmpty = true;
+    }
+    else {
+      this.isEmpty = false;
+      this.getMovieSearch();
+    }
+    
+  }
+
+  getMovieSearch() {
+
+    if (this.searchTerm != null) {
+      this.movieService.getSearchDetails(1, this.searchTerm).pipe(
+        finalize(() => {
+          this.isLoading = false;
+        }),
+        catchError((e) => {
+          console.log(e);
+          this.error = e.error.status_message;
+        return[];
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          console.log("Results" + res);
+  
+          this.movies.push(...res.results);
+          res.total_pages === this.currentPage;
+        },
+      });
+    }
+}
+
+  getMovieFromId(id:string):void {
+    this.movieService.getMovieDetails(id).subscribe((movie) => {
+      console.log(movie);
+    });
+  }
+
+  // Methods to interact with DB
+  async set(key:string, value:number) {
+    return await this.storageService.set(key, value);
+  }
+
+  async get(key:string) {
+    return await this.storageService.get(key);
+  }
+
+  async keySet() {
+    return await this.storageService.keySet();
+  }
+
+  async removeWatchedMovie(id:string) {
+    await this.storageService.remove(id);
+  }
 }
