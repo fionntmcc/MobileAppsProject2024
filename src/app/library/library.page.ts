@@ -42,7 +42,8 @@ export class LibraryPage {
   public error = null;
   public isLoading:boolean = false;
   public isEmpty:boolean = true;
-  public movies:MovieResult[] = [];
+  public movies:Array<MovieResult> = [];
+  public sortedMovies:Array<MovieResult> = [];
   public ratings:number[] = [];
   public imageBaseUrl = "https://image.tmdb.org/t/p";
   public dummyArray = new Array(5);
@@ -85,23 +86,29 @@ export class LibraryPage {
           })
         )
         .subscribe({
-          next: (res) => {
-            this.movies.push(res);
-          }
-        });
-
-        this.storageService.get(keys[i])
+          next: (resultMovie) => {
+            this.storageService.get(keys[i])
         .then( (res:number) => {
-          this.ratings.push(res);
           console.log(i);
-          console.log("Vote avg idx " + i + " before:" + this.movies[i].vote_average);
+          console.log("Vote avg idx " + i + " before:" + resultMovie.vote_average);
           this.movies[i].vote_average = res;
-          console.log("Vote avg idx " + i + " after:" + this.movies[i].vote_average);
+          console.log("Vote avg idx " + i + " after:" + resultMovie.vote_average);
+          this.ratings.push(res);
         })
         .catch((e) => {
           console.log("Error: " + e);
         });
+        this.movies.push(resultMovie);
+          }
+        });
       }
+      this.sortedMovies = this.movies.sort((a, b) => {
+        if (a.vote_average > b.vote_average) { return 1; }
+        return -1;
+      });
+      console.log("movies");
+      console.log(this.sortedMovies);
+      console.log("ratings");
     })
     .catch(e => {
       console.log("Error: " + e);

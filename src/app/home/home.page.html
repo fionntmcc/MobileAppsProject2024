@@ -44,7 +44,7 @@
           <p>Release Date: {{ item.release_date | date:'d/M/y' }}</p>
         </ion-label>
 
-        <ion-badge slot="end"> {{ item.vote_average }}</ion-badge>
+        <ion-badge slot="end">IMDb Rating: {{ item.vote_average }}</ion-badge>
       </ion-item>
     } @empty {
       <!-- If list is empty and not loading, no movies found -->
