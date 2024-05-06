@@ -43,14 +43,16 @@ export class LibraryPage {
   public isLoading:boolean = false;
   public isEmpty:boolean = true;
   public movies:MovieResult[] = [];
+  public ratings:number[] = [];
   public imageBaseUrl = "https://image.tmdb.org/t/p";
   public dummyArray = new Array(5);
   public index = 1;
   public searchTerm:any = "";
-
+  
   constructor() {
     this.loadMovies();
     console.log(this.movies);
+    console.log(this.ratings);
   }
 
   loadMoreMovies(event: InfiniteScrollCustomEvent) {
@@ -66,15 +68,16 @@ export class LibraryPage {
     }
 
     this.storageService.keySet()
-    .then(responseKeys => {
-      console.log("Keyset:" + responseKeys);
+    .then(keys => {
+      console.log("Keyset:" + keys);
 
       // Below is my failed attempt to sort the movies by ratings, however it will be 
       // easier to sort the returned array of movies than database entries
       // responseKeys.sort((a, b) => (await this.storageService.get(a) - await this.storageService.get(b)));
       
-      for (let i = 0; i < responseKeys.length; i++) {
-        this.movieService.getMovieDetails(responseKeys[i]).pipe(
+      for (let i = 0; i < keys.length; i++) {
+
+        this.movieService.getMovieDetails(keys[i]).pipe(
           catchError((e) => {
             console.log(e);
             this.error = e.error.status_message;
@@ -83,16 +86,27 @@ export class LibraryPage {
         )
         .subscribe({
           next: (res) => {
-            console.log(res);
             this.movies.push(res);
           }
-        })
+        });
 
+        this.storageService.get(keys[i])
+        .then( (res:number) => {
+          this.ratings.push(res);
+          console.log(i);
+          console.log("Vote avg idx " + i + " before:" + this.movies[i].vote_average);
+          this.movies[i].vote_average = res;
+          console.log("Vote avg idx " + i + " after:" + this.movies[i].vote_average);
+        })
+        .catch((e) => {
+          console.log("Error: " + e);
+        });
       }
     })
     .catch(e => {
       console.log("Error: " + e);
     });
+
     /*
     this.movieService.getTopCharts(this.currentPage).pipe(
       finalize(() => {
