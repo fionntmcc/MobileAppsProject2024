@@ -1,11 +1,30 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-back-button text="Back"></ion-back-button>
-    </ion-buttons>
     <ion-title>
       Library
     </ion-title>
+  </ion-toolbar>
+
+  <!-- Tabs Bar -->
+  <ion-toolbar>
+    <ion-tabs>
+      <ion-tab-bar>
+        <ion-tab-button [routerLink]="['/home']">
+          Top Movies
+          <ion-icon src="..\assets\icon\home.svg" alt="home" height="40"></ion-icon>
+        </ion-tab-button>
+  
+        <ion-tab-button [routerLink]="['/search']">
+          Search
+          <ion-icon src="..\assets\icon\search.svg" alt="search"></ion-icon>
+        </ion-tab-button>
+  
+        <ion-tab-button>
+          Library
+          <ion-icon src="..\assets\icon\library.svg" alt="library"></ion-icon>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </ion-tabs>
   </ion-toolbar>
 </ion-header>
 

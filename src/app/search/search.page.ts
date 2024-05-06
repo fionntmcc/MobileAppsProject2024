@@ -18,6 +18,10 @@ import { IonHeader,
     IonButton,
     IonButtons,
     IonBackButton,
+    IonTabs,
+    IonTabBar,
+    IonTabButton,
+    IonIcon,
    } from '@ionic/angular/standalone';
 //import { DatePipe } from '@angular/common';
 import { MovieService } from 'src/services/movie.service';
@@ -26,16 +30,43 @@ import { MovieResult, WatchedMovie } from 'src/services/interfaces';
 import { RouterLinkWithHref } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { Storage } from '@ionic/storage-angular';
+import { StorageService } from 'src/services/storage.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'search.page.html',
   styleUrls: ['search.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonAvatar, IonSkeletonText, IonAlert, IonBadge, RouterLinkWithHref, DatePipe, IonInfiniteScroll, IonInfiniteScrollContent, IonSearchbar, IonButton, IonButtons, IonBackButton, ],
+  imports: [
+    IonHeader, 
+    IonToolbar, 
+    IonTitle, 
+    IonContent, 
+    IonList, 
+    IonItem, 
+    IonLabel, 
+    IonAvatar, 
+    IonSkeletonText, 
+    IonAlert, 
+    IonBadge, 
+    RouterLinkWithHref, 
+    DatePipe, 
+    IonInfiniteScroll, 
+    IonInfiniteScrollContent, 
+    IonSearchbar, 
+    IonButton, 
+    IonButtons, 
+    IonBackButton,
+    IonTabs,
+    IonTabBar,
+    IonTabButton,
+    IonIcon,
+   ],
 })
 export class SearchPage {
+
   private movieService = inject(MovieService);
+  private storageService = inject(StorageService);
   private currentPage:number = 1;
   public error = null;
   public isLoading:boolean = false;
@@ -45,9 +76,16 @@ export class SearchPage {
   public dummyArray = new Array(5);
   public index = 1;
   public searchTerm:any = "";
+  public watchedMovieIds:string[] = []
 
   constructor() {
-    
+    this.storageService.keySet()
+    .then((res) => {
+      this.watchedMovieIds = res;
+    })
+    .catch((e) => {
+      console.log("Error: " + e);
+    });
   }
 
   loadMoreMovies(event: InfiniteScrollCustomEvent) {
@@ -135,4 +173,9 @@ export class SearchPage {
       console.log(movie);
     });
   }
+
+    // Methods to retrieve from DB
+    async keySet() {
+      return await this.storageService.keySet();
+    }
 }

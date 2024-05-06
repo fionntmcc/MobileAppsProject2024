@@ -21,6 +21,10 @@ import {
   IonBackButton,
   IonSelect,
   IonSelectOption,
+  IonTabs,
+  IonTabBar,
+  IonTabButton,
+  IonIcon,
 } from '@ionic/angular/standalone';
 //import { DatePipe } from '@angular/common';
 import { MovieService } from 'src/services/movie.service';
@@ -36,7 +40,32 @@ import { StorageService } from 'src/services/storage.service';
   templateUrl: 'library.page.html',
   styleUrls: ['library.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonAvatar, IonSkeletonText, IonAlert, IonBadge, RouterLinkWithHref, DatePipe, IonInfiniteScroll, IonInfiniteScrollContent, IonSearchbar, IonButton, IonButtons, IonBackButton, IonSelect, IonSelectOption,],
+  imports: [
+    IonHeader,
+    IonToolbar, 
+    IonTitle, 
+    IonContent, 
+    IonList, 
+    IonItem, 
+    IonLabel, 
+    IonAvatar, 
+    IonSkeletonText, 
+    IonAlert, 
+    IonBadge, 
+    RouterLinkWithHref, 
+    DatePipe, 
+    IonInfiniteScroll, 
+    IonInfiniteScrollContent, IonSearchbar, 
+    IonButton, 
+    IonButtons, 
+    IonBackButton, 
+    IonSelect, 
+    IonSelectOption, 
+    IonTabs,
+    IonTabBar,
+    IonTabButton,
+    IonIcon,
+],
 })
 export class LibraryPage {
   private movieService = inject(MovieService);

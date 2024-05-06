@@ -1,11 +1,30 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-back-button text="Back"></ion-back-button>
-    </ion-buttons>
     <ion-title>
       Search
     </ion-title>
+  </ion-toolbar>
+
+  <!-- Tabs Bar -->
+  <ion-toolbar>
+    <ion-tabs>
+      <ion-tab-bar>
+        <ion-tab-button  [routerLink]="['/home']">
+          Top Movies
+          <ion-icon src="..\assets\icon\home.svg" alt="home" height="40"></ion-icon>
+        </ion-tab-button>
+  
+        <ion-tab-button>
+          Search
+          <ion-icon src="..\assets\icon\search.svg" alt="search"></ion-icon>
+        </ion-tab-button>
+  
+        <ion-tab-button [routerLink]="['/library']">
+          Library
+          <ion-icon src="..\assets\icon\library.svg" alt="library"></ion-icon>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </ion-tabs>
   </ion-toolbar>
 </ion-header>
 
@@ -38,7 +57,10 @@
           <p>Release Date: {{ item.release_date | date:'d/M/y' }}</p>
         </ion-label>
 
-        <ion-badge slot="end"> {{ item.vote_average }}</ion-badge>
+        @if (watchedMovieIds.includes(item.id.toString())) {
+          <ion-badge slot="end" color="medium">Watched</ion-badge>
+        }
+        <ion-badge slot="end">IMDb Rating: {{ item.vote_average }}</ion-badge>
       </ion-item>
 
     } @empty {

@@ -21,7 +21,8 @@ import { IonContent,
    IonToggle,
    IonPopover,
    IonInput,
-   IonRadio, } from '@ionic/angular/standalone';
+   IonRadio,
+   } from '@ionic/angular/standalone';
 import { MovieService } from 'src/services/movie.service';
 import { StorageService } from 'src/services/storage.service';
 import { MovieResult, WatchedMovie } from 'src/services/interfaces';
