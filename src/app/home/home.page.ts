@@ -16,13 +16,19 @@ import { IonHeader,
   IonSearchbar,
   IonButton,
   IonButtons,
+  IonTabs,
+  IonTabBar,
+  IonTabButton,
+  IonIcon,
+  IonCard,
  } from '@ionic/angular/standalone';
 import { MovieService } from 'src/services/movie.service';
 import { StorageService } from 'src/services/storage.service';
 import { finalize, catchError} from 'rxjs';
 import { RouterLinkWithHref } from '@angular/router';
-import { MovieResult, WatchedMovie } from 'src/services/interfaces';
+import { MovieResult } from 'src/services/interfaces';
 import { DatePipe } from '@angular/common';
+import { IonicStorageModule } from '@ionic/storage-angular';
 
 
 @Component({
@@ -30,7 +36,31 @@ import { DatePipe } from '@angular/common';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonAvatar, IonSkeletonText, IonAlert, IonBadge, RouterLinkWithHref, DatePipe, IonInfiniteScroll, IonInfiniteScrollContent, IonSearchbar, IonButton, IonButtons, ],
+  imports: [
+    IonHeader, 
+    IonToolbar, 
+    IonTitle, 
+    IonContent, 
+    IonList, 
+    IonItem, 
+    IonLabel, 
+    IonAvatar, 
+    IonSkeletonText, 
+    IonAlert, 
+    IonBadge, 
+    RouterLinkWithHref, 
+    DatePipe, 
+    IonInfiniteScroll, 
+    IonInfiniteScrollContent, 
+    IonSearchbar, 
+    IonButton, 
+    IonButtons, 
+    IonTabs,
+    IonTabBar,
+    IonTabButton,
+    IonIcon,
+    IonCard,
+],
 })
 export class HomePage {
 
@@ -43,14 +73,26 @@ export class HomePage {
   public isLoading:boolean = false;
   public index = 1;
   public fakeArray = new Array(5);
-
+  public watchedMovieIds:string[] = [];
   public id:string = "";
   public value:string = "";
 
 
   constructor() {
+    this.getWatchedMovies();
     this.loadMovies();
     console.log(this.movies);
+  }
+
+  getWatchedMovies() {
+    this.keySet()
+    .then((res) => {
+      this.watchedMovieIds = res;
+      console.log(this.watchedMovieIds);
+    })
+    .catch((e) => {
+      console.log("Error: " + e);
+    });
   }
 
   loadMovies(event?: InfiniteScrollCustomEvent) {
@@ -100,15 +142,7 @@ export class HomePage {
   }
 
   // Methods to retrieve from DB
-  async set(id:string, value:any) {
-    return await this.storageService.set(id , value);
-  }
-
-  async get(id:string) {
-    return await this.storageService.get(id);
-  }
-
-  async remove(id:string) {
-    return await this.storageService.remove(id);
+  async keySet() {
+    return await this.storageService.keySet();
   }
 }

@@ -4,36 +4,61 @@
       Top Movies
     </ion-title>
   </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-tabs>
+      <ion-tab-bar>
+        <ion-tab-button>
+          Top Movies
+        </ion-tab-button>
+  
+        <ion-tab-button [routerLink]="['/search']">
+          Search
+          <ion-icon name="search"></ion-icon>
+        </ion-tab-button>
+  
+        <ion-tab-button [routerLink]="['/library']">
+          Library
+          <ion-icon name="library"></ion-icon>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </ion-tabs>
+  </ion-toolbar>
 </ion-header>
 
 
 <ion-content [fullscreen]="true">
+
   <!-- Button linking to search page -->
+  <!--
   <ion-buttons>
     <ion-button [routerLink]="['/search']">Search Movies</ion-button>
     <ion-button [routerLink]="['/library']">Library</ion-button>
   </ion-buttons>
+  -->
+
   <!-- Code block displays fake skeleton list if the 
     httpclient is getting initial movie list -->
   @if (isLoading) {
-    <ion-list>
-      @for (i of fakeArray; track i) {
-        <ion-item lines="none" class="ion-padding-bottom">
-          <ion-avatar slot="start">
-            <ion-skeleton-text></ion-skeleton-text>
-          </ion-avatar>
-          <ion-skeleton-text animated style="height: 40px"/>
-        </ion-item>
-      }
-    </ion-list>
-    <!-- Display error message if movies cannot be retrieved -->
+  <ion-list>
+    @for (i of fakeArray; track i) {
+    <ion-item lines="none" class="ion-padding-bottom">
+      <ion-avatar slot="start">
+        <ion-skeleton-text></ion-skeleton-text>
+      </ion-avatar>
+      <ion-skeleton-text animated style="height: 40px" />
+    </ion-item>
+    }
+  </ion-list>
+  <!-- Display error message if movies cannot be retrieved -->
   } @else if (error) {
-    <ion-alert header="Error" [message]="error" isOpen="true" [buttons]="['Ok']" />
+  <ion-alert header="Error" [message]="error" isOpen="true" [buttons]="['Ok']" />
   }
 
   <!-- Display all movie items to screen in list -->
-  <ion-list>
-    @for (item of movies; track item.id) {
+  <ion-card>
+    <ion-list>
+      @for (item of movies; track item.id) {
       <ion-item class="movie-list-item" [routerLink]="['/details', item.id]">
         <ion-avatar class="movie-poster" slot="start">
           <img [src]="imageBaseUrl + '/w92' + item.poster_path" alt="poster">
@@ -43,24 +68,27 @@
           <h3> {{ item.title }} </h3>
           <p>Release Date: {{ item.release_date | date:'d/M/y' }}</p>
         </ion-label>
-
+        @if (watchedMovieIds.includes(item.id.toString())) {
+        <ion-badge slot="end" color="medium">Watched</ion-badge>
+        }
         <ion-badge slot="end">IMDb Rating: {{ item.vote_average }}</ion-badge>
       </ion-item>
-    } @empty {
+      } @empty {
       <!-- If list is empty and not loading, no movies found -->
       @if (!isLoading) {
-        <ion-item lines="none">
-          <ion-label class="ion-test-center">No movies found</ion-label>
-        </ion-item>
-      
+      <ion-item lines="none">
+        <ion-label class="ion-test-center">No movies found</ion-label>
+      </ion-item>
+
       }
-    }
-  </ion-list>
- <!-- If reaching end of page, generate more 
+      }
+    </ion-list>
+    <!-- If reaching end of page, generate more 
   movies and display loading symbol -->
-  <ion-infinite-scroll (ionInfinite)="loadMoreMovies($event)">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data"></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+    <ion-infinite-scroll (ionInfinite)="loadMoreMovies($event)">
+      <ion-infinite-scroll-content loadingSpinner="bubbles"
+        loadingText="Loading more data"></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ion-card>
+
 </ion-content>
-
-

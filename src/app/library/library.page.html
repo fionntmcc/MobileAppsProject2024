@@ -12,8 +12,14 @@
 <ion-content [fullscreen]="true">
   <!-- Button linking to search page -->
   <ion-buttons>
-    <ion-button [routerLink]="['/search']">Search Movies</ion-button>
-    <ion-button [routerLink]="['/library']">Library</ion-button>
+
+    <ion-item>
+      <ion-select label="Sort by:" value="ratingDesc" interface="popover" (ionChange)="sortChange($event.target.value)">
+        <ion-select-option value="ratingDesc">Descending Rating</ion-select-option>
+        <ion-select-option value="ratingAsc">Ascending Rating</ion-select-option>
+      </ion-select>
+    </ion-item>
+
   </ion-buttons>
   <!-- Code block displays fake skeleton list if the 
     httpclient is getting initial movie list -->

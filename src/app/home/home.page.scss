@@ -33,3 +33,11 @@
 .movie-poster {
   --border-radius: 8px;
 }
+
+.tabs-bar {
+  display: flex;
+  //position: fixed;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}

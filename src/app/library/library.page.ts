@@ -19,11 +19,13 @@ import {
   IonButton,
   IonButtons,
   IonBackButton,
+  IonSelect,
+  IonSelectOption,
 } from '@ionic/angular/standalone';
 //import { DatePipe } from '@angular/common';
 import { MovieService } from 'src/services/movie.service';
 import { finalize, catchError } from 'rxjs';
-import { MovieResult, WatchedMovie } from 'src/services/interfaces';
+import { MovieResult } from 'src/services/interfaces';
 import { RouterLinkWithHref } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { Storage } from '@ionic/storage-angular';
@@ -34,7 +36,7 @@ import { StorageService } from 'src/services/storage.service';
   templateUrl: 'library.page.html',
   styleUrls: ['library.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonAvatar, IonSkeletonText, IonAlert, IonBadge, RouterLinkWithHref, DatePipe, IonInfiniteScroll, IonInfiniteScrollContent, IonSearchbar, IonButton, IonButtons, IonBackButton,],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonAvatar, IonSkeletonText, IonAlert, IonBadge, RouterLinkWithHref, DatePipe, IonInfiniteScroll, IonInfiniteScrollContent, IonSearchbar, IonButton, IonButtons, IonBackButton, IonSelect, IonSelectOption,],
 })
 export class LibraryPage {
   private movieService = inject(MovieService);
@@ -58,7 +60,7 @@ export class LibraryPage {
   // loads watched movies and sorts them by user's rating
   loadMovies(event?: InfiniteScrollCustomEvent) {
     this.error = null;
-    
+
     /*
     if (!event) {
       this.isLoading = true;
@@ -68,7 +70,7 @@ export class LibraryPage {
     // get keys from database 
     // (keys are movieIds)
     this.storageService.keySet()
-    // once keys are returned
+      // once keys are returned
       .then(keys => {
         console.log("Keyset:" + keys);
 
@@ -87,6 +89,7 @@ export class LibraryPage {
               return [];
             })
           )
+            // creates an Observable
             .subscribe({
               // returned MovieResult
               next: (resultMovie) => {
@@ -100,7 +103,7 @@ export class LibraryPage {
 
                     // sort movies by user's rating
                     this.movies.sort((a, b) => {
-                      return a.vote_average - b.vote_average;
+                      return b.vote_average - a.vote_average;
                     });
 
                   })
@@ -200,6 +203,15 @@ export class LibraryPage {
   getMovieFromId(id: string): void {
     this.movieService.getMovieDetails(id).subscribe((movie) => {
       console.log(movie);
+    });
+  }
+
+  sortChange(value:string) {
+    console.log("Sort By: " + value);
+    // sort movies by user's rating
+    this.movies.sort((a, b) => {
+      if (value === "ratingAsc") { return a.vote_average - b.vote_average; }
+      return b.vote_average - a.vote_average;
     });
   }
 
