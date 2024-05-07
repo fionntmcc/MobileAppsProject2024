@@ -7,7 +7,20 @@
       There is a known bug with the IonToggle, where if the toggle startingState = true,
       then the intial click does not visually change the button's state
     -->
-    <ion-toggle [enableOnOffLabels]="true" name="toggle" [checked]="isChecked" (click)="toggleClicked()" slot="end" style="padding-right: 5%;">Watched</ion-toggle>
+    @if (rating != null) {
+      <ion-badge class="label" slot="end" color="medium">Your rating: {{rating}}</ion-badge>
+    }
+
+    <ion-toggle [enableOnOffLabels]="true" name="toggle" [checked]="isChecked" (ionChange)="toggleClicked()" slot="end" style="padding-right: 5%;">Watched</ion-toggle>
+
+    <!-- Rounded switch: not going to be used -->
+    <!--
+    <label class="switch" slot="end">
+      <input type="checkbox">
+      <span class="slider round"></span>
+    </label>
+    -->
+
     <ion-popover [isOpen]="isPopupActive">
       <ng-template>
           <ion-item>

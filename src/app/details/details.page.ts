@@ -22,6 +22,7 @@ import { IonContent,
    IonPopover,
    IonInput,
    IonRadio,
+   IonBadge,
    } from '@ionic/angular/standalone';
 import { MovieService } from 'src/services/movie.service';
 import { StorageService } from 'src/services/storage.service';
@@ -29,8 +30,6 @@ import { MovieResult, WatchedMovie } from 'src/services/interfaces';
 import { CurrencyPipe, DatePipe} from '@angular/common';
 import { Browser } from '@capacitor/browser';
 import { Storage } from '@ionic/storage-angular';
-import { NgModule } from '@angular/core';
-import { environment } from 'src/environments/environment';
 import { FormsModule, NgModel } from '@angular/forms';
 import { delay } from 'rxjs';
 
@@ -65,6 +64,7 @@ import { delay } from 'rxjs';
     IonInput,
     IonRadio, 
     FormsModule,
+    IonBadge,
   ]
 })
 
@@ -79,8 +79,9 @@ export class DetailsPage implements OnInit {
   public isPopupActive:boolean = false;
   public homepage:string = "";
   public status:string = "";
-  public rating:number = 0;
-  private movieId:string = "";
+  public rating:number | null = null;
+  public movieId:string = "";
+  private firstToggleClick = true;
 
   @Input()
   set id(movieId:string) {
@@ -89,17 +90,23 @@ export class DetailsPage implements OnInit {
       this.movie.set(movie); 
       this.homepage = movie.homepage;
       this.movieId = movieId;
+      this.getRating();
+      this.getToggleStartingValue();
     });
 
   }
 
   async openMovieWebsite() {
-    await Browser.open({ url: this.homepage});
+    await Browser.open({url: this.homepage});
   }
 
   async toggleClicked() {
-    this.isChecked = !this.isChecked;
-    
+    if (this.firstToggleClick == true) {
+      this.firstToggleClick = false;
+      this.toggleClicked();
+    }
+    else {
+      this.isChecked = !this.isChecked;
     if (!this.isChecked) {
       await this.removeWatchedMovie();
       this.isPopupActive = false;
@@ -107,6 +114,17 @@ export class DetailsPage implements OnInit {
       this.isPopupActive = true;
     }
     console.log(this.isChecked);
+    }
+  }
+
+  getRating() {
+    this.get(this.movieId)
+    .then((res) => {
+      this.rating = res;
+    })
+    .catch((e) => {
+      console.log("Error: " + e);
+    });
   }
 
   // Methods to interact with DB
@@ -127,8 +145,7 @@ export class DetailsPage implements OnInit {
     console.log("All keys: " + keys);
     for (let i = 0; i < keys.length; i++) {
       const rating = await this.storageService.get(keys[i]);
-      console.log("Key: " + keys[i] + "  -  Value: " + rating);
-      
+      console.log("Key: " + keys[i] + "  -  Value: " + rating);      
     }
   }
 
@@ -139,25 +156,19 @@ export class DetailsPage implements OnInit {
     await this.storageService.set(this.movieId, this.rating);
   }
 
-  getToggleStartingValue():boolean {
-    this.storageService.get(this.movieId)
-    .then(response => {
-      if (response === undefined) { return false; }
-      return true;
-    })
-    .catch(e => {
-      console.log("Error getting this movie's rating: " + e)
-    })
-    return false;
+  getToggleStartingValue() {
+    if (this.rating == null) { this.isChecked = false; }
+    else {this.isChecked = true; }
   }
 
   saveRating() {
     console.log(this.rating);
-    if (this.rating >= 0 && this.rating <= 10) {
+    if (this.rating != null && this.rating >= 0 && this.rating <= 10) {
       // save rating
       this.addWatchedMovie();
       this.isPopupActive = false;
     } else {
+      this.rating = null;
       alert("Please enter a rating between 0 and 10.");
     }
     
@@ -165,7 +176,6 @@ export class DetailsPage implements OnInit {
 
   constructor(private storage: Storage) { 
     // Get list of watched movies
-    this.isChecked = this.getToggleStartingValue();
     this.getWatchedMovies();
     //this.storage.clear();
   }
