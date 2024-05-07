@@ -80,8 +80,8 @@ export class DetailsPage implements OnInit {
   public homepage:string = "";
   public status:string = "";
   public rating:number | null = null;
+  public ratingInput:number = 0;
   public movieId:string = "";
-  private firstToggleClick = true;
 
   @Input()
   set id(movieId:string) {
@@ -101,20 +101,15 @@ export class DetailsPage implements OnInit {
   }
 
   async toggleClicked() {
-    if (this.firstToggleClick == true) {
-      this.firstToggleClick = false;
-      this.toggleClicked();
-    }
-    else {
-      this.isChecked = !this.isChecked;
+    this.isChecked = !this.isChecked;
     if (!this.isChecked) {
       await this.removeWatchedMovie();
       this.isPopupActive = false;
+      this.rating = null;
     } else { 
       this.isPopupActive = true;
     }
     console.log(this.isChecked);
-    }
   }
 
   getRating() {
@@ -162,9 +157,10 @@ export class DetailsPage implements OnInit {
   }
 
   saveRating() {
-    console.log(this.rating);
-    if (this.rating != null && this.rating >= 0 && this.rating <= 10) {
+    console.log(this.ratingInput);
+    if (this.ratingInput >= 0 && this.ratingInput <= 10) {
       // save rating
+      this.rating = this.ratingInput;
       this.addWatchedMovie();
       this.isPopupActive = false;
     } else {
