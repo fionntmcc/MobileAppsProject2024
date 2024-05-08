@@ -22,16 +22,12 @@
 </p>
 <br/>
 <p>
-  # Clone this repository
   $ git clone https://github.com/fionntmcc/MobileAppsProject2024
 
-  # Go into the repository
-  $ cd electron-markdownify
+  $ cd movie-app
 
-  # Install dependencies
   $ npm install
 
-  # Run the app
   $ npm start
 </p>
 <br/>
