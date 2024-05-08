@@ -30,9 +30,7 @@ import { StorageService } from 'src/services/storage.service';
 import { MovieResult, WatchedMovie } from 'src/services/interfaces';
 import { CurrencyPipe, DatePipe} from '@angular/common';
 import { Browser } from '@capacitor/browser';
-import { Storage } from '@ionic/storage-angular';
 import { FormsModule, NgModel } from '@angular/forms';
-import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-details',
@@ -177,7 +175,6 @@ export class DetailsPage implements OnInit {
   constructor() { 
     // Get list of watched movies
     this.getWatchedMovies();
-    //this.storage.clear();
   }
 
   ngOnInit() {

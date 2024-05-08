@@ -59,6 +59,7 @@
 
   <!-- Display all movie items to screen in list -->
   <ion-list>
+
     @for (item of movies; track item.id) {
     <ion-item class="movie-list-item" [routerLink]="['/details', item.id]">
       <ion-avatar class="movie-poster" slot="start">

@@ -29,7 +29,7 @@
 
   <!-- Sort By toolbar -->
   <ion-toolbar>
-    <ion-buttons>
+    <ion-buttons class="margin">
       <ion-item>
         <ion-select label="Sort by:" value="ratingDesc" interface="popover" (ionChange)="sortChange($event.target.value)">
           <ion-select-option value="ratingDesc">Descending Rating</ion-select-option>
@@ -45,6 +45,16 @@
 
   <!-- Display all movie items to screen in list -->
   <ion-list>
+    
+    <!-- Displays number of watched movies if there are movies displayed -->
+    @if (movies.length != 0) {
+      <ion-item class="margin">{{movies.length}} watched movies</ion-item>
+    } @else {
+      <ion-item class="margin">Your library is empty!</ion-item>
+      <ion-item class="margin">Your watched movies will appear here.</ion-item>
+    }
+
+    <!-- Add all movies to list -->
     @for (item of movies; track item.id) {
       <!-- Link to details page for movie -->
       <ion-item class="movie-list-item" [routerLink]="['/details', item.id]">
@@ -71,14 +81,6 @@
           <ion-badge slot="end"> Your rating: {{ item.vote_average }}</ion-badge>
         }
       </ion-item>
-    } @empty {
-      <!-- If list is empty and not loading, no movies found -->
-      @if (!isLoading) {
-        <ion-item lines="none">
-          <ion-label class="ion-test-center">No movies found</ion-label>
-        </ion-item>
-      
-      }
     }
     
   </ion-list>

@@ -30,8 +30,6 @@ import { finalize, catchError} from 'rxjs';
 import { RouterLinkWithHref } from '@angular/router';
 import { MovieResult } from 'src/services/interfaces';
 import { DatePipe } from '@angular/common';
-import { IonicStorageModule } from '@ionic/storage-angular';
-
 
 @Component({
   selector: 'app-home',
@@ -82,12 +80,23 @@ export class HomePage {
   public value:string = "";
 
 
-  constructor() {
+  constructor() {}
+
+  ionViewWillEnter() {
+    // reset variables
+    this.currentPage = 1;
+    this.movies = [];
+    this.error = null;
+    this.isLoading = false;
+    this.watchedMovieIds = [];
+    this.id = "";
+    this.value = "";
+    
     // retrieve watched movies
     this.loadWatchedMovies();
     // load movies
     this.loadMovies();
-    // log
+    
     console.log(this.movies);
   }
 

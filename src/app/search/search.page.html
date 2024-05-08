@@ -45,6 +45,9 @@
     <ion-alert header="Error" [message]="error" isOpen="true" [buttons]="['Ok']" />
   } @else {
     <ion-list>
+      @if (totalMovies != null) {
+        <ion-item class="margin">{{totalMovies}} results for search term "{{searchTerm}}"</ion-item>
+      }
       @for (item of movies; track item.id) {
         <ion-item class="movie-list-item" button [routerLink]="['/details', item.id]">
           <ion-avatar slot="start" class="movie-poster">
@@ -85,5 +88,5 @@
     </ion-infinite-scroll>
     
   }
-  
+
 </ion-content>

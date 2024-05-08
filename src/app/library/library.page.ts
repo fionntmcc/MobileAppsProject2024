@@ -27,7 +27,7 @@ import {
 } from '@ionic/angular/standalone';
 //import { DatePipe } from '@angular/common';
 import { MovieService } from 'src/services/movie.service';
-import { finalize, catchError } from 'rxjs';
+import { catchError } from 'rxjs';
 import { MovieResult } from 'src/services/interfaces';
 import { RouterLinkWithHref } from '@angular/router';
 import { DatePipe } from '@angular/common';
@@ -72,20 +72,23 @@ export class LibraryPage {
   
   // Necessary inits
   public error = null;
-  public isLoading: boolean = false;
-  public isEmpty: boolean = true;
   public movies: MovieResult[] = [];
   public ratings: number[] = [];
   public imageBaseUrl = "https://image.tmdb.org/t/p";
   public dummyArray = new Array(5);
-  public index = 1;
-  public searchTerm: any = "";
   public topThree:number[] = [];
 
   constructor() {
-    // load watched movies
+  }
+
+  ionViewWillEnter() {
+    // reset variables
+    this.movies = [];
+    this.topThree = [];
+    this.error = null;
+    
+    // load watched movies and reset fields
     this.loadMovies();
-    console.log(this.movies);
   }
 
   // loads watched movies and sorts them by user's rating

@@ -31,7 +31,6 @@ import { finalize, catchError } from 'rxjs';
 import { MovieResult } from 'src/services/interfaces';
 import { RouterLinkWithHref } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { Storage } from '@ionic/storage-angular';
 import { StorageService } from 'src/services/storage.service';
 
 @Component({
@@ -71,20 +70,32 @@ export class SearchPage {
   private movieService = inject(MovieService);
   private storageService = inject(StorageService);
 
-  // Necessary inits
+  // necessary inits
   public currentPage:number = 1;
-  public totalPages:number = 100;
+  public totalPages:number = 1;
+  public totalMovies:number | null = null;
   public error = null;
   public isLoading:boolean = false;
   public isEmpty:boolean = true;
   public movies:MovieResult[] = [];
   public imageBaseUrl = "https://image.tmdb.org/t/p";
   public dummyArray = new Array(5);
-  public index = 1;
   public searchTerm:any = "";
   public watchedMovieIds:string[] = []
 
-  constructor() {
+  constructor() {}
+
+  ionViewWillEnter() {
+    // reset variables
+    this.currentPage = 1;
+    this.totalPages = 1;
+    this.totalMovies = null;
+    this.error = null;
+    this.isLoading = false;
+    this.isEmpty = true;
+    this.movies = [];
+    this.watchedMovieIds = [];
+
     // get keySet before starting page
     this.storageService.keySet()
     // pass res to watchedMovieIds
@@ -116,6 +127,8 @@ export class SearchPage {
     // empty movies array and set currentPage to 1
     this.movies = [];
     this.currentPage = 1;
+    this.totalMovies = null;
+    this.totalPages = 1;
 
     // if empty search term, display "Enter movie name"
     if (this.searchTerm === "") {
@@ -146,21 +159,30 @@ export class SearchPage {
           event.target.complete();
         }
       }),
+      // if error
       catchError((e) => {
         console.log(e);
         this.error = e.error.status_message;
       return[];
       })
     )
+    // create Observable
     .subscribe({
+      // promise returned, use .then().catch() block
       next: (res) => {
         console.log(res);
 
+        // push movie to movies array
         this.movies.push(...res.results);
-        if (this.currentPage == 1) { this.totalPages = res.total_pages; }
-        console.log(this.currentPage);
+
+        // if first page, set totalPages and totalMovies
+        if (this.currentPage == 1) { 
+          this.totalPages = res.total_pages;
+          this.totalMovies = res.total_results;
+        }
+        // disable target if currentPage is greater than or equal to totalPages
         if (event) {
-          event.target.disabled = res.total_pages === this.currentPage;
+          event.target.disabled = this.totalPages <= this.currentPage;
         }
       },
     });
