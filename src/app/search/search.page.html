@@ -16,7 +16,7 @@
   
         <ion-tab-button [routerLink]="['/search']">
           Search
-          <ion-icon src="..\assets\icon\search.svg" alt="search"></ion-icon>
+          <ion-icon src="..\assets\icon\search.svg" alt="search" color="primary"></ion-icon>
         </ion-tab-button>
   
         <ion-tab-button [routerLink]="['/library']">
@@ -32,6 +32,7 @@
   <ion-searchbar type="text" placeholder="Search movies" [debounce]="1000" (ionInput)="checkSearchbarValue($event)"></ion-searchbar>
   @if (isLoading) {
     <ion-list>
+      <!-- Loading SkeletonList -->
       @for (i of dummyArray; track i) {
         <ion-item lines="none" class="ion-padding-bottom">
           <ion-avatar slot="start">
@@ -41,13 +42,16 @@
         </ion-item>
       }
     </ion-list>
+    <!-- if error -->
   } @else if (error) {
     <ion-alert header="Error" [message]="error" isOpen="true" [buttons]="['Ok']" />
   } @else {
+    <!-- if no results -->
     <ion-list>
       @if (totalMovies != null) {
         <ion-item class="margin">{{totalMovies}} results for search term "{{searchTerm}}"</ion-item>
       }
+      <!-- display movies in movies array -->
       @for (item of movies; track item.id) {
         <ion-item class="movie-list-item" button [routerLink]="['/details', item.id]">
           <ion-avatar slot="start" class="movie-poster">
@@ -64,8 +68,9 @@
           }
           <ion-badge slot="end">IMDb Rating: {{ item.vote_average }}</ion-badge>
         </ion-item>
-  
+        <!-- if no movies -->
       } @empty {
+        <!-- if not loading -->
         @if (!isLoading) {
           <ion-item lines="none">
             @if (!isEmpty) {
@@ -78,10 +83,12 @@
         }
       }
     </ion-list>
-  
+    <!-- infinite scroll loading animation at bottom of list calls function loadMoreMovies($event) -->
     <ion-infinite-scroll (ionInfinite)="loadMoreMovies($event)">
+      <!-- if at the end of results -->
       @if (currentPage >= totalPages) {
         <ion-infinite-scroll-content loadingText="No more movies to display"></ion-infinite-scroll-content>
+        <!-- else display loading animation -->
       } @else {
         <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data"></ion-infinite-scroll-content>
       }

@@ -23,6 +23,8 @@ import {
   IonTabButton,
   IonIcon,
   IonCard,
+  IonPopover,
+  IonText,
  } from '@ionic/angular/standalone';
 import { MovieService } from 'src/services/movie.service';
 import { StorageService } from 'src/services/storage.service';
@@ -60,6 +62,8 @@ import { DatePipe } from '@angular/common';
     IonTabButton,
     IonIcon,
     IonCard,
+    IonPopover,
+    IonText,
 ],
 })
 export class HomePage {
@@ -72,12 +76,13 @@ export class HomePage {
   public movies:MovieResult[] = [];
   public imageBaseUrl = "https://image.tmdb.org/t/p";
   public error = null;
-  public isLoading:boolean = false;
+  public isLoading:boolean = true;
   public index = 1;
   public fakeArray = new Array(5);
   public watchedMovieIds:string[] = [];
   public id:string = "";
   public value:string = "";
+  public isHelpOpen:boolean = false;
 
 
   constructor() {}
@@ -91,7 +96,8 @@ export class HomePage {
     this.watchedMovieIds = [];
     this.id = "";
     this.value = "";
-    
+    this.isHelpOpen= false;
+
     // retrieve watched movies
     this.loadWatchedMovies();
     // load movies
@@ -162,6 +168,10 @@ export class HomePage {
     this.currentPage++;
     // load movies on currentPage
     this.loadMovies(event);
+  }
+
+  displayHelp() {
+    this.isHelpOpen = true;
   }
 
   /*
