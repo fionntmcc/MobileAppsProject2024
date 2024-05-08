@@ -27,9 +27,10 @@ export class MovieService {
     return this.httpClient.get<MovieResult>(BASE_URL + "/movie/" + id + "?api_key=" + API_KEY);
   }
 
-  getSearchDetails(page = 1, searchTerm:string): Observable<ApiResult> {
+  getSearchDetails(page:number, searchTerm:string): Observable<ApiResult> {
     searchTerm.toLowerCase().trim().replace(" ", "+");
-    return this.httpClient.get<ApiResult>(BASE_URL + "/search/movie?api_key=" + API_KEY + "&query=" + searchTerm);
+    console.log(BASE_URL + "/search/movie?api_key=" + API_KEY + "&query=" + searchTerm + "&page=" + page);
+    return this.httpClient.get<ApiResult>(BASE_URL + "/search/movie?api_key=" + API_KEY + "&query=" + searchTerm + "&page=" + page);
   }
 
   getTrailerDetails(id:string): Observable<TrailerResult> {

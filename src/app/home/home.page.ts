@@ -1,5 +1,7 @@
+// All necessary imports
 import { Component, inject, } from '@angular/core';
-import { IonHeader,
+import { 
+  IonHeader,
   IonToolbar,
   IonTitle,
   IonContent,
@@ -63,9 +65,11 @@ import { IonicStorageModule } from '@ionic/storage-angular';
 ],
 })
 export class HomePage {
-
+  // inject services
   private movieService = inject(MovieService);
   private storageService = inject(StorageService);
+
+  // Necessary inits
   private currentPage:number = 1;
   public movies:MovieResult[] = [];
   public imageBaseUrl = "https://image.tmdb.org/t/p";
@@ -123,10 +127,6 @@ export class HomePage {
           event.target.disabled = res.total_pages === this.currentPage;
         }
       },
-    });
-
-    this.movieService.getTopCharts().subscribe((movies) => {
-      console.log(movies);
     });
   }
 

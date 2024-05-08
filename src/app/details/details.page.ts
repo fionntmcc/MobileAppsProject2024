@@ -1,3 +1,4 @@
+// All necessary imports
 import { Component, Input, OnInit, WritableSignal, inject, signal } from '@angular/core';
 import { RouterLinkWithHref } from '@angular/router';
 import { IonContent,
@@ -71,8 +72,11 @@ import { delay } from 'rxjs';
 
 
 export class DetailsPage implements OnInit {
+  // inject services
   private movieService = inject(MovieService);
   private storageService = inject(StorageService);
+
+  // Necessary inits
   public imageBaseUrl = "https://image.tmdb.org/t/p";
   public movie:WritableSignal<MovieResult | null> = signal(null);
   public isChecked:boolean = false;

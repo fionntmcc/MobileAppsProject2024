@@ -29,7 +29,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-searchbar type="text" placeholder="Search movies" [debounce]="1000" (ionInput)="getSearchbarValue($event)"></ion-searchbar>
+  <ion-searchbar type="text" placeholder="Search movies" [debounce]="1000" (ionInput)="checkSearchbarValue($event)"></ion-searchbar>
   @if (isLoading) {
     <ion-list>
       @for (i of dummyArray; track i) {
@@ -78,7 +78,11 @@
   </ion-list>
 
   <ion-infinite-scroll (ionInfinite)="loadMoreMovies($event)">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data"></ion-infinite-scroll-content>
+    @if (currentPage >= totalPages) {
+      <ion-infinite-scroll-content loadingText="No more movies to display"></ion-infinite-scroll-content>
+    } @else {
+      <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data"></ion-infinite-scroll-content>
+    }
   </ion-infinite-scroll>
   
 </ion-content>

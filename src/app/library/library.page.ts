@@ -1,3 +1,4 @@
+// All necessary imports
 import { Component, inject } from '@angular/core';
 import {
   IonHeader,
@@ -68,8 +69,11 @@ import { StorageService } from 'src/services/storage.service';
 ],
 })
 export class LibraryPage {
+  // inject services
   private movieService = inject(MovieService);
   private storageService = inject(StorageService);
+  
+  // Necessary inits
   private currentPage: number = 1;
   public error = null;
   public isLoading: boolean = false;
