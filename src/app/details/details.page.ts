@@ -95,7 +95,6 @@ export class DetailsPage implements OnInit {
       this.homepage = movie.homepage;
       this.movieId = movieId;
       this.getRating();
-      this.setToggleStartingValue();
     });
 
   }
@@ -120,6 +119,7 @@ export class DetailsPage implements OnInit {
     this.get(this.movieId)
     .then((res) => {
       this.rating = res;
+      this.setToggleStartingValue();
     })
     .catch((e) => {
       console.log("Error: " + e);
@@ -156,7 +156,7 @@ export class DetailsPage implements OnInit {
   }
 
   setToggleStartingValue() {
-    if (this.ratingInput == null) { this.isChecked = false; }
+    if (this.rating == null) { this.isChecked = false; }
     else {this.isChecked = true; }
   }
 
@@ -174,7 +174,7 @@ export class DetailsPage implements OnInit {
     
   }
 
-  constructor(private storage: Storage) { 
+  constructor() { 
     // Get list of watched movies
     this.getWatchedMovies();
     //this.storage.clear();
