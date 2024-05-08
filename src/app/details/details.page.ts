@@ -95,7 +95,7 @@ export class DetailsPage implements OnInit {
       this.homepage = movie.homepage;
       this.movieId = movieId;
       this.getRating();
-      this.getToggleStartingValue();
+      this.setToggleStartingValue();
     });
 
   }
@@ -155,8 +155,8 @@ export class DetailsPage implements OnInit {
     await this.storageService.set(this.movieId, this.rating);
   }
 
-  getToggleStartingValue() {
-    if (this.rating == null) { this.isChecked = false; }
+  setToggleStartingValue() {
+    if (this.ratingInput == null) { this.isChecked = false; }
     else {this.isChecked = true; }
   }
 
