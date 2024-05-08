@@ -5,8 +5,6 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  InfiniteScrollCustomEvent,
-  SearchbarCustomEvent,
   IonList,
   IonItem,
   IonLabel,
@@ -33,7 +31,6 @@ import { finalize, catchError } from 'rxjs';
 import { MovieResult } from 'src/services/interfaces';
 import { RouterLinkWithHref } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { Storage } from '@ionic/storage-angular';
 import { StorageService } from 'src/services/storage.service';
 
 @Component({
@@ -74,7 +71,6 @@ export class LibraryPage {
   private storageService = inject(StorageService);
   
   // Necessary inits
-  private currentPage: number = 1;
   public error = null;
   public isLoading: boolean = false;
   public isEmpty: boolean = true;
@@ -84,32 +80,24 @@ export class LibraryPage {
   public dummyArray = new Array(5);
   public index = 1;
   public searchTerm: any = "";
+  public topThree:number[] = [];
 
   constructor() {
+    // load watched movies
     this.loadMovies();
     console.log(this.movies);
   }
 
   // loads watched movies and sorts them by user's rating
-  loadMovies(event?: InfiniteScrollCustomEvent) {
+  loadMovies() {
     this.error = null;
-
-    /*
-    if (!event) {
-      this.isLoading = true;
-    }
-    */
 
     // get keys from database 
     // (keys are movieIds)
     this.storageService.keySet()
-      // once keys are returned
+      // promise returned, use .then().catch() block
       .then(keys => {
         console.log("Keyset:" + keys);
-
-        // Below is my failed attempt to sort the movies by ratings, however it will be 
-        // easier to sort the returned array of movies than database entries
-        // responseKeys.sort((a, b) => (await this.storageService.get(a) - await this.storageService.get(b)));
 
         // loop through movieIds
         for (let i = 0; i < keys.length; i++) {
@@ -128,7 +116,8 @@ export class LibraryPage {
               next: (resultMovie) => {
                 // get user's rating for movie
                 this.storageService.get(keys[i])
-                  .then((res: number) => {
+                  // promise returned, use .then().catch() block
+                  .then((res:number) => {
                     // set vote_average to user's rating
                     resultMovie.vote_average = res;
                     //push movie to array
@@ -138,6 +127,9 @@ export class LibraryPage {
                     this.movies.sort((a, b) => {
                       return b.vote_average - a.vote_average;
                     });
+                    for (let j = 0; j < 3; j++) {
+                      this.topThree[j] = this.movies[j].vote_average;
+                    }
 
                   })
                   // if error
@@ -148,6 +140,10 @@ export class LibraryPage {
             });
         }
         // end of for loop
+
+        // Below is my failed attempt to sort the movies by ratings, however it will be 
+        // easier to sort the returned array of movies than database entries
+        // responseKeys.sort((a, b) => (await this.storageService.get(a) - await this.storageService.get(b)));
 
         // I tried sorting the movies array here like this: 
         /*
@@ -161,107 +157,50 @@ export class LibraryPage {
         // so I am not quite sure what is causing this behaviour.
 
       })
+      // if error
       .catch(e => {
         console.log("Error: " + e);
       });
-
-    /*
-    this.movieService.getTopCharts(this.currentPage).pipe(
-      finalize(() => {
-        this.isLoading = false;
-        if (event) {
-          event.target.complete();
-        }
-      }),
-      catchError((e) => {
-        console.log(e);
-        this.error = e.error.status_message;
-        return [];
-      })  
-    )
-    .subscribe({
-      next: (res) => {
-        console.log(res);
-        this.movies.push(...res.results);
-        if (event) {
-          event.target.disabled = res.total_pages === this.currentPage;
-        }
-      },
-    });
-
-    this.movieService.getTopCharts().subscribe((movies) => {
-      console.log(movies);
-    });
-    */
   }
 
-  getSearchbarValue(event: SearchbarCustomEvent) {
-    this.movies = [];
-    this.searchTerm = event.detail.value?.trim();
-    console.log(this.searchTerm);
-    if (this.searchTerm === "") {
-      this.isEmpty = true;
-    }
-    else {
-      this.isEmpty = false;
-      this.getMovieSearch();
-    }
 
-  }
-
-  getMovieSearch() {
-
-    if (this.searchTerm != null) {
-      this.movieService.getSearchDetails(1, this.searchTerm).pipe(
-        finalize(() => {
-          this.isLoading = false;
-        }),
-        catchError((e) => {
-          console.log(e);
-          this.error = e.error.status_message;
-          return [];
-        })
-      )
-        .subscribe({
-          next: (res) => {
-            console.log("Results" + res);
-
-            this.movies.push(...res.results);
-            res.total_pages === this.currentPage;
-          },
-        });
-    }
-  }
-
-  getMovieFromId(id: string): void {
-    this.movieService.getMovieDetails(id).subscribe((movie) => {
-      console.log(movie);
-    });
-  }
-
+  // event called by "Sort By" dropdown
   sortChange(value:string) {
     console.log("Sort By: " + value);
-    // sort movies by user's rating
+    // sort movies by user's preference ()
     this.movies.sort((a, b) => {
       if (value === "ratingAsc") { return a.vote_average - b.vote_average; }
-      return b.vote_average - a.vote_average;
+      else if (value === "ratingDesc") { return b.vote_average - a.vote_average; }
+      return (a.title.localeCompare(b.title));
     });
   }
 
-  // Methods to interact with DB
+  /*
+    --- Methods to interact with DB ---
+    All methods call storageService asynchronously
+  */
+  
+  // set watchedMovie
   async set(key: string, value: number) {
     return await this.storageService.set(key, value);
   }
 
+  // get watchedMovie
   async get(key: string) {
     return await this.storageService.get(key);
   }
 
+  // get watchedMovie
   async keySet() {
     return await this.storageService.keySet();
   }
 
+  // remove watchedMovie
   async removeWatchedMovie(id: string) {
     await this.storageService.remove(id);
   }
+
+  /*
+    --- End of DB methods ---
+  */
 }

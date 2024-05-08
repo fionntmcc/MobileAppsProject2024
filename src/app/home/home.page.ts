@@ -83,29 +83,40 @@ export class HomePage {
 
 
   constructor() {
-    this.getWatchedMovies();
+    // retrieve watched movies
+    this.loadWatchedMovies();
+    // load movies
     this.loadMovies();
+    // log
     console.log(this.movies);
   }
 
-  getWatchedMovies() {
+  // loads watched movie IDs from DB
+  loadWatchedMovies() {
+    // call keyset()
     this.keySet()
+    // promise returned, use then().catch() block
     .then((res) => {
       this.watchedMovieIds = res;
       console.log(this.watchedMovieIds);
     })
+    // if error
     .catch((e) => {
       console.log("Error: " + e);
     });
   }
 
+  // initialises movies on page startup
   loadMovies(event?: InfiniteScrollCustomEvent) {
+
     this.error = null;
 
+    // for skeleton list
     if (!event) {
       this.isLoading = true;
     }
 
+    // get movies on currentPage
     this.movieService.getTopCharts(this.currentPage).pipe(
       finalize(() => {
         this.isLoading = false;
@@ -113,16 +124,22 @@ export class HomePage {
           event.target.complete();
         }
       }),
+      // if error
       catchError((e) => {
         console.log(e);
         this.error = e.error.status_message;
         return [];
       })  
     )
+    // create Observable
     .subscribe({
+      // use next() block
       next: (res) => {
+        // print movie to console
         console.log(res);
+        // push movie to movies array
         this.movies.push(...res.results);
+        // disable InfiniteScroll if total pages equals current page
         if (event) {
           event.target.disabled = res.total_pages === this.currentPage;
         }
@@ -130,19 +147,25 @@ export class HomePage {
     });
   }
 
-  getMovieFromId(id:string):void {
-    this.movieService.getMovieDetails(id).subscribe((movie) => {
-      console.log(movie);
-    });
-  }
-
+  // loads next page of movies when scrolling
   loadMoreMovies(event?: InfiniteScrollCustomEvent) {
+    // increment currentPage
     this.currentPage++;
+    // load movies on currentPage
     this.loadMovies(event);
   }
 
-  // Methods to retrieve from DB
+  /*
+    --- Methods to interact with DB ---
+  */
+
+  // keySet() method returns all keys from DB. 
+  // This is needed to retrieve watched movie IDs.
   async keySet() {
     return await this.storageService.keySet();
   }
+
+  /*
+    --- End of DB methods ---
+  */
 }

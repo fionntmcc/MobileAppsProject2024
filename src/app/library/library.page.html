@@ -26,54 +26,50 @@
       </ion-tab-bar>
     </ion-tabs>
   </ion-toolbar>
+
+  <!-- Sort By toolbar -->
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-item>
+        <ion-select label="Sort by:" value="ratingDesc" interface="popover" (ionChange)="sortChange($event.target.value)">
+          <ion-select-option value="ratingDesc">Descending Rating</ion-select-option>
+          <ion-select-option value="ratingAsc">Ascending Rating</ion-select-option>
+          <ion-select-option value="alphabetical">A-Z</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <!-- Button linking to search page -->
-  <ion-buttons>
-
-    <ion-item>
-      <ion-select label="Sort by:" value="ratingDesc" interface="popover" (ionChange)="sortChange($event.target.value)">
-        <ion-select-option value="ratingDesc">Descending Rating</ion-select-option>
-        <ion-select-option value="ratingAsc">Ascending Rating</ion-select-option>
-      </ion-select>
-    </ion-item>
-
-  </ion-buttons>
-  <!-- Code block displays fake skeleton list if the 
-    httpclient is getting initial movie list -->
-  @if (isLoading) {
-    <!--
-      <ion-list>
-      @for (i of fakeArray; track i) {
-        <ion-item lines="none" class="ion-padding-bottom">
-          <ion-avatar slot="start">
-            <ion-skeleton-text></ion-skeleton-text>
-          </ion-avatar>
-          <ion-skeleton-text animated style="height: 40px"/>
-        </ion-item>
-      }
-    </ion-list>
-      -->
-    <!-- Display error message if movies cannot be retrieved -->
-  } @else if (error) {
-    <ion-alert header="Error" [message]="error" isOpen="true" [buttons]="['Ok']" />
-  }
 
   <!-- Display all movie items to screen in list -->
   <ion-list>
     @for (item of movies; track item.id) {
+      <!-- Link to details page for movie -->
       <ion-item class="movie-list-item" [routerLink]="['/details', item.id]">
+
+        <!-- Display movie poster -->
         <ion-avatar class="movie-poster" slot="start">
           <img [src]="imageBaseUrl + '/w92' + item.poster_path" alt="poster">
         </ion-avatar>
 
+        <!-- Display title and release date -->
         <ion-label class="ion-text-wrap">
           <h3> {{ item.title }} </h3>
           <p>Release Date: {{ item.release_date | date:'d/M/y' }}</p>
         </ion-label>
 
-        <ion-badge slot="end"> Your rating: {{ item.vote_average }}</ion-badge>
+        <!-- Displays top 3 movies in Gold, Silver and Bronze, and the rest in blue -->
+        @if (item.vote_average == topThree[0]) {
+          <ion-badge slot="end" class="first"> Your rating: {{ item.vote_average }}</ion-badge>
+        } @else if (item.vote_average == topThree[1]) {
+          <ion-badge slot="end" class="second"> Your rating: {{ item.vote_average }}</ion-badge>
+        } @else if (item.vote_average == topThree[2]) {
+          <ion-badge slot="end" class="third"> Your rating: {{ item.vote_average }}</ion-badge>
+        } @else {
+          <ion-badge slot="end"> Your rating: {{ item.vote_average }}</ion-badge>
+        }
       </ion-item>
     } @empty {
       <!-- If list is empty and not loading, no movies found -->
