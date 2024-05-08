@@ -28,7 +28,7 @@
 
   $ npm install
 
-  $ npm start
+  $ ionic serve
 </p>
 <br/>
 <p>
