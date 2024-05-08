@@ -19,7 +19,7 @@
           <ion-icon src="..\assets\icon\search.svg" alt="search"></ion-icon>
         </ion-tab-button>
   
-        <ion-tab-button>
+        <ion-tab-button [routerLink]="['/library']">
           Library
           <ion-icon src="..\assets\icon\library.svg" alt="library"></ion-icon>
         </ion-tab-button>
@@ -61,11 +61,11 @@
         </ion-label>
 
         <!-- Displays top 3 movies in Gold, Silver and Bronze, and the rest in blue -->
-        @if (item.vote_average == topThree[0]) {
+        @if (item.id == topThree[0]) {
           <ion-badge slot="end" class="first"> Your rating: {{ item.vote_average }}</ion-badge>
-        } @else if (item.vote_average == topThree[1]) {
+        } @else if (item.id == topThree[1]) {
           <ion-badge slot="end" class="second"> Your rating: {{ item.vote_average }}</ion-badge>
-        } @else if (item.vote_average == topThree[2]) {
+        } @else if (item.id == topThree[2]) {
           <ion-badge slot="end" class="third"> Your rating: {{ item.vote_average }}</ion-badge>
         } @else {
           <ion-badge slot="end"> Your rating: {{ item.vote_average }}</ion-badge>

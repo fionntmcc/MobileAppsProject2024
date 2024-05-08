@@ -99,71 +99,31 @@ export class SearchPage {
 
   // loads more movies if there are more movies to load within search results
   loadMoreMovies(event?: InfiniteScrollCustomEvent) {
+    // increment currentPage
     this.currentPage++;
+    // load currentPage
     this.loadMovieSearch(event);
   }
 
-  /*
-  // initialises movies on page startup
-  loadMovies(event?: InfiniteScrollCustomEvent) {
-    this.error = null;
-
-    // for skeleton list
-    if (!event) {
-      this.isLoading = true;
-    }
-    
-    // get movies on currentPage
-    this.movieService.getTopCharts(this.currentPage).pipe(
-      // response returned
-      finalize(() => {
-        this.isLoading = false;
-        if (event) {
-          event.target.complete();
-        }
-      }),
-      // if error
-      catchError((e) => {
-        console.log(e);
-        this.error = e.error.status_message;
-        return [];
-      })  
-    )
-    // create observable
-    .subscribe({
-      next: (res) => {
-        // print movieResult to console
-        console.log(res);
-
-        this.totalPages = res.total_pages;
-
-        // push movieResult to movies array
-        this.movies.push(...res.results);
-
-        // disable scroll of currentPage equals total_pages
-        if (event) {
-          event.target.disabled = this.totalPages === this.currentPage;
-        }
-      },
-    });
-    
-  }
-  */
-
   // eventListener reads searchbar value
   checkSearchbarValue(event:SearchbarCustomEvent) {
+
     // trim search value
     this.searchTerm = event.detail.value?.trim();
-    console.log(this.searchTerm);
+
+    // console.log(this.searchTerm);
+
+    // empty movies array and set currentPage to 1
+    this.movies = [];
+    this.currentPage = 1;
+
     // if empty search term, display "Enter movie name"
     if (this.searchTerm === "") {
       this.isEmpty = true;
+      this.isLoading = false;
     }
     // else search movie
     else {
-      // delete existing movies and set currentPage to 1
-      this.movies = [];
-      this.currentPage = 1;
       this.isEmpty = false;
       this.loadMovieSearch();
     }
@@ -207,12 +167,6 @@ export class SearchPage {
 
     this.error = null;
 }
-
-  getMovieFromId(id:string):void {
-    this.movieService.getMovieDetails(id).subscribe((movie) => {
-      console.log(movie);
-    });
-  }
 
     // Methods to retrieve from DB
     async keySet() {

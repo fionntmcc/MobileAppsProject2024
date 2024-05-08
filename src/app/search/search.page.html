@@ -14,7 +14,7 @@
           <ion-icon src="..\assets\icon\home.svg" alt="home" height="40"></ion-icon>
         </ion-tab-button>
   
-        <ion-tab-button>
+        <ion-tab-button [routerLink]="['/search']">
           Search
           <ion-icon src="..\assets\icon\search.svg" alt="search"></ion-icon>
         </ion-tab-button>
@@ -43,46 +43,47 @@
     </ion-list>
   } @else if (error) {
     <ion-alert header="Error" [message]="error" isOpen="true" [buttons]="['Ok']" />
-  }
-
-  <ion-list>
-    @for (item of movies; track item.id) {
-      <ion-item class="movie-list-item" button [routerLink]="['/details', item.id]">
-        <ion-avatar slot="start" class="movie-poster">
-          <img [src]="imageBaseUrl + '/w92' + item.poster_path" alt="poster">
-        </ion-avatar>
-        
-        <ion-label class="ion-text-wrap">
-          <h3> {{ item.title }} </h3>
-          <p>Release Date: {{ item.release_date | date:'d/M/y' }}</p>
-        </ion-label>
-
-        @if (watchedMovieIds.includes(item.id.toString())) {
-          <ion-badge slot="end" color="medium">Watched</ion-badge>
-        }
-        <ion-badge slot="end">IMDb Rating: {{ item.vote_average }}</ion-badge>
-      </ion-item>
-
-    } @empty {
-      @if (!isLoading) {
-        <ion-item lines="none">
-          @if (!isEmpty) {
-            <ion-label class="ion-test-center">No movies found</ion-label>
-          } @else {
-            <ion-label class="ion-test-center">Enter movie name</ion-label>
+  } @else {
+    <ion-list>
+      @for (item of movies; track item.id) {
+        <ion-item class="movie-list-item" button [routerLink]="['/details', item.id]">
+          <ion-avatar slot="start" class="movie-poster">
+            <img [src]="imageBaseUrl + '/w92' + item.poster_path" alt="poster">
+          </ion-avatar>
+          
+          <ion-label class="ion-text-wrap">
+            <h3> {{ item.title }} </h3>
+            <p>Release Date: {{ item.release_date | date:'d/M/y' }}</p>
+          </ion-label>
+  
+          @if (watchedMovieIds.includes(item.id.toString())) {
+            <ion-badge slot="end" color="medium">Watched</ion-badge>
           }
+          <ion-badge slot="end">IMDb Rating: {{ item.vote_average }}</ion-badge>
         </ion-item>
-      
+  
+      } @empty {
+        @if (!isLoading) {
+          <ion-item lines="none">
+            @if (!isEmpty) {
+              <ion-label class="ion-test-center">No movies found</ion-label>
+            } @else {
+              <ion-label class="ion-test-center">Enter movie name</ion-label>
+            }
+          </ion-item>
+        
+        }
       }
-    }
-  </ion-list>
-
-  <ion-infinite-scroll (ionInfinite)="loadMoreMovies($event)">
-    @if (currentPage >= totalPages) {
-      <ion-infinite-scroll-content loadingText="No more movies to display"></ion-infinite-scroll-content>
-    } @else {
-      <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data"></ion-infinite-scroll-content>
-    }
-  </ion-infinite-scroll>
+    </ion-list>
+  
+    <ion-infinite-scroll (ionInfinite)="loadMoreMovies($event)">
+      @if (currentPage >= totalPages) {
+        <ion-infinite-scroll-content loadingText="No more movies to display"></ion-infinite-scroll-content>
+      } @else {
+        <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data"></ion-infinite-scroll-content>
+      }
+    </ion-infinite-scroll>
+    
+  }
   
 </ion-content>

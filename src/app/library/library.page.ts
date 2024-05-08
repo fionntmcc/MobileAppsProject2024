@@ -128,7 +128,7 @@ export class LibraryPage {
                       return b.vote_average - a.vote_average;
                     });
                     for (let j = 0; j < 3; j++) {
-                      this.topThree[j] = this.movies[j].vote_average;
+                      this.topThree[j] = this.movies[j].id;
                     }
 
                   })
