@@ -8,7 +8,7 @@
       then the intial click does not visually change the button's state
     -->
     @if (rating != null) {
-      <ion-badge class="label" slot="end" color="medium">Your rating: {{rating}}</ion-badge>
+      <ion-badge class="margin" slot="end" color="medium">Your rating: {{rating}}</ion-badge>
     }
 
     <ion-toggle [enableOnOffLabels]="true" name="toggle" [checked]="isChecked" (ionChange)="toggleClicked()" slot="end" style="padding-right: 5%;">Watched</ion-toggle>
@@ -65,13 +65,14 @@
         <ion-label color="medium">{{ movie.overview }}</ion-label>
 
         <ion-item lines="none">
+          <ion-icon src="..\assets\icon\cash.svg" alt="cash" height="40" class="margin"></ion-icon>
           @if (movie.budget == 0) {
             <ion-label>Movie budget is unavaible</ion-label>
           } @else {
             <ion-label>Budget: {{movie.budget | currency: 'USD' }}</ion-label>
           }
         </ion-item>
-        <ion-buttons>
+        <ion-buttons class="margin">
           @if (homepage === "") {
             <ion-button>Website Unavaible</ion-button>
           } @else {
