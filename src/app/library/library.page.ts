@@ -130,15 +130,17 @@ export class LibraryPage {
                     this.movies.sort((a, b) => {
                       return b.vote_average - a.vote_average;
                     });
-                    for (let j = 0; j < 3; j++) {
-                      this.topThree[j] = this.movies[j].id;
+                    if (this.movies.length >= 3) {
+                      for (let j = 0; j < 3; j++) {
+                        this.topThree[j] = this.movies[j].id;
+                      }
                     }
-
                   })
                   // if error
                   .catch((e) => {
                     console.log("Error: " + e);
                   });
+                  
               }
             });
         }
