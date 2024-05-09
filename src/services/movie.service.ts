@@ -36,9 +36,10 @@ export class MovieService {
     searchTerm.toLowerCase().trim().replace(" ", "+");
     return this.httpClient.get<ApiResult>(BASE_URL + "/search/movie?api_key=" + API_KEY + "&query=" + searchTerm + "&page=" + page);
   }
-
+  /*
   // return video details associated with movies
   getTrailerDetails(id:string): Observable<TrailerResult> {
     return this.httpClient.get<TrailerResult>('https://api.themoviedb.org/3/movie/' + id + '?api_key=' + API_KEY + '&language=en-US&append_to_response=videos');
   }
+  */
 }
